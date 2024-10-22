@@ -1,0 +1,11 @@
+{
+  "name": "Odoo Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "odoo",
+  "workspaceFolder": "/workspace",
+  "extensions": [
+    "ms-azuretools.vscode-docker"
+  ],
+  "forwardPorts": [8069],
+  "postCreateCommand": "echo 'Odoo environment setup complete!'"
+}
