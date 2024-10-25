@@ -3,7 +3,7 @@
     "dockerFile": "Dockerfile",
     "build": {
         "args": {
-            "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+            "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
         }
     },
     "forwardPorts": [8069, 5432],
@@ -16,7 +16,7 @@
         }
     },
     "remoteEnv": {
-        "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+        "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     },
     "hostRequirements": {
         "cpus": 4,
