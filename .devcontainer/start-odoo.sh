@@ -19,4 +19,6 @@ python3 /workspace/odoo/odoo-bin \
     --db_host=localhost \
     --db_user=odoo \
     --db_password=odoo \
+    --database=odoo \
+    -i base \
     --dev=all
