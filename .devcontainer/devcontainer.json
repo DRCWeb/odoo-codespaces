@@ -1,6 +1,11 @@
 {
-    "name": "Odoo 15 Development",
+    "name": "Odoo 15 Enterprise",
     "dockerFile": "Dockerfile",
+    "build": {
+        "args": {
+            "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+        }
+    },
     "forwardPorts": [8069, 5432],
     "customizations": {
         "vscode": {
@@ -9,5 +14,13 @@
                 "ms-python.vscode-pylance"
             ]
         }
+    },
+    "remoteEnv": {
+        "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+    },
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "16gb",
+        "storage": "32gb"
     }
 }
