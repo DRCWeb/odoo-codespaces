@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Iniciar PostgreSQL como usuario postgres
-su postgres -c "pg_ctl -D /var/lib/postgresql/data start"
+# Iniciar PostgreSQL
+sudo service postgresql start
 
 # Esperar a que PostgreSQL esté listo
 until pg_isready; do
@@ -10,8 +10,8 @@ until pg_isready; do
 done
 
 # Crear usuario y base de datos si no existen
-su postgres -c "psql -c \"CREATE USER odoo WITH PASSWORD 'odoo'\" || true"
-su postgres -c "psql -c \"CREATE DATABASE odoo OWNER odoo\" || true"
+sudo -u postgres psql -c "CREATE USER odoo WITH PASSWORD 'odoo'" || true
+sudo -u postgres psql -c "CREATE DATABASE odoo OWNER odoo" || true
 
 # Iniciar Odoo
 python3 /workspace/odoo/odoo-bin \
