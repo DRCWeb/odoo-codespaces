@@ -29,15 +29,15 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /workspace
 
 # Configurar Git para clonar Enterprise
-ARG GITHUB_TOKEN
-RUN if [ ! -z "$GITHUB_TOKEN" ]; then \
+ARG ODOO_ENTERPRISE_TOKEN
+RUN if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
     git config --global credential.helper store && \
-    echo "https://oauth2:${GITHUB_TOKEN}@github.com" > ~/.git-credentials; \
+    echo "https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com" > ~/.git-credentials; \
     fi
 
 # Clonar Odoo y Enterprise
 RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
-    if [ ! -z "$GITHUB_TOKEN" ]; then \
+    if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
     git clone https://github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise; \
     fi
 
