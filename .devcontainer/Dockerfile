@@ -4,10 +4,9 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 
-# Crear usuario vscode primero
-RUN useradd -ms /bin/bash vscode \
-    && groupadd -g 1000 postgres \
-    && useradd -u 1000 -g postgres postgres
+# Crear usuarios sin IDs específicos
+RUN useradd -ms /bin/bash vscode && \
+    useradd -ms /bin/bash postgres
 
 # Instalar dependencias básicas
 RUN apt-get update && apt-get install -y \
@@ -43,7 +42,13 @@ RUN mkdir -p /var/run/postgresql && chown -R postgres:postgres /var/run/postgres
 
 # Configurar el directorio de trabajo
 WORKDIR /workspace
-RUN chown -R vscode:vscode /workspace
+RUN mkdir -p /workspace && chown -R vscode:vscode /workspace
+
+# Cambiar al usuario postgres para inicializar la base de datos
+USER postgres
+RUN initdb -D /var/lib/postgresql/data
+RUN echo "host all all all trust" >> /var/lib/postgresql/data/pg_hba.conf \
+    && echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
 
 # Cambiar al usuario vscode para las operaciones restantes
 USER vscode
@@ -56,17 +61,9 @@ ENV PATH="/workspace/venv/bin:$PATH"
 RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo \
     && pip3 install -r /workspace/odoo/requirements.txt
 
-# Inicializar la base de datos de PostgreSQL (como usuario postgres)
-USER postgres
-RUN initdb -D /var/lib/postgresql/data
-RUN echo "host all all all trust" >> /var/lib/postgresql/data/pg_hba.conf \
-    && echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
-
-# Volver al usuario vscode
-USER vscode
-
 # Copiar script de inicio
 COPY --chown=vscode:vscode start-odoo.sh /workspace/
 RUN chmod +x /workspace/start-odoo.sh
 
+# Script de inicio
 CMD ["/workspace/start-odoo.sh"]
