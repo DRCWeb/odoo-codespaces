@@ -3,16 +3,14 @@
     "dockerFile": "Dockerfile",
     "forwardPorts": [8069, 5432],
     "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
+        "python.defaultInterpreterPath": "/workspace/venv/bin/python",
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true
     },
     "extensions": [
         "ms-python.python",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        "ms-vsliveshare.vsliveshare"
     ],
-    "runArgs": [
-        "--shm-size=2g"
-    ],
-    "remoteUser": "vscode",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-    "workspaceFolder": "/workspace"
+    "remoteUser": "vscode"
 }
