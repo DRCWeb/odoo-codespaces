@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/devcontainers/python:3.8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 
-# Instalar PostgreSQL y otras dependencias
+# Instalar dependencias
 RUN apt-get update && apt-get install -y \
     postgresql \
     postgresql-client \
@@ -26,12 +26,23 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Crear directorios necesarios
-RUN mkdir -p /workspace/odoo
-
-# Clonar Odoo e instalar dependencias
 WORKDIR /workspace
-RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo \
-    && pip3 install -r /workspace/odoo/requirements.txt
+
+# Configurar Git para clonar Enterprise
+ARG GITHUB_TOKEN
+RUN if [ ! -z "$GITHUB_TOKEN" ]; then \
+    git config --global credential.helper store && \
+    echo "https://oauth2:${GITHUB_TOKEN}@github.com" > ~/.git-credentials; \
+    fi
+
+# Clonar Odoo y Enterprise
+RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
+    if [ ! -z "$GITHUB_TOKEN" ]; then \
+    git clone https://github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise; \
+    fi
+
+# Instalar dependencias de Python
+RUN pip3 install -r /workspace/odoo/requirements.txt
 
 # Copiar script de inicio
 COPY start-odoo.sh /workspace/
