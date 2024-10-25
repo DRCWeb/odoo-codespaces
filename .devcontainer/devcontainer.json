@@ -1,11 +1,18 @@
 {
-  "name": "Odoo Development",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "odoo",
-  "workspaceFolder": "/workspace",
-  "extensions": [
-    "ms-azuretools.vscode-docker"
-  ],
-  "forwardPorts": [8069],
-  "postCreateCommand": "echo 'Odoo environment setup complete!'"
+    "name": "Odoo 15 Development",
+    "dockerFile": "Dockerfile",
+    "forwardPorts": [8069, 5432],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+    ],
+    "runArgs": [
+        "--shm-size=2g"
+    ],
+    "remoteUser": "vscode",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace"
 }
