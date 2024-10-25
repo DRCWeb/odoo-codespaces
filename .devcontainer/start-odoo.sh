@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Iniciar PostgreSQL
-sudo service postgresql start
+pg_ctl -D /var/lib/postgresql/15/main start || true
 
 # Esperar a que PostgreSQL esté listo
 until pg_isready; do
@@ -9,9 +9,12 @@ until pg_isready; do
     sleep 2
 done
 
-# Crear usuario y base de datos si no existen
-sudo -u postgres psql -c "CREATE USER odoo WITH PASSWORD 'odoo'" || true
-sudo -u postgres psql -c "CREATE DATABASE odoo OWNER odoo" || true
+# Construir ruta de addons
+ADDONS_PATH="/workspace/odoo/addons"
+if [ -d "/workspace/enterprise" ]; then
+    ADDONS_PATH="/workspace/enterprise,${ADDONS_PATH}"
+    echo "Odoo Enterprise detectado, agregado al addons_path"
+fi
 
 # Iniciar Odoo
 python3 /workspace/odoo/odoo-bin \
