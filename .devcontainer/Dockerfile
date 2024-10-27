@@ -1,8 +1,14 @@
 FROM odoo:15.0
 USER root
 
+# Configurar repositorio de PostgreSQL
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
 # Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get remove -y libpq5 postgresql-client && \
+    apt-get install -y \
     git \
     python3-pip \
     python3-dev \
@@ -10,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libldap2-dev \
     libsasl2-dev \
     libssl-dev \
+    postgresql-client-13 \
     libpq-dev \
     libxml2-dev \
     libxslt1-dev \
@@ -26,6 +33,7 @@ RUN apt-get update && apt-get install -y \
     python3-wheel \
     python3-venv \
     poppler-utils \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar Git para clonar Enterprise
