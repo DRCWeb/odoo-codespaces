@@ -32,13 +32,13 @@ RUN mkdir -p /var/log/odoo && \
     mkdir -p /etc/odoo
 
 # Configurar Git y clonar repositorios
-ARG GITHUB_TOKEN
+ARG ODOO_ENTERPRISE_TOKEN
 RUN git config --global user.email "dr@dfvz.org" && \
     git config --global user.name "VT | Dayron Romero" && \
     git config --global credential.helper store && \
-    echo "https://${GITHUB_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials && \
+    echo "https://${ODOO_ENTERPRISE_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials && \
     git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
-    git clone https://${GITHUB_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
+    git clone https://${ODOO_ENTERPRISE_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
 
 # Instalar dependencias de Python
 RUN pip3 install -r /workspace/odoo/requirements.txt
