@@ -1,59 +1,35 @@
-FROM mcr.microsoft.com/devcontainers/python:3.8
+FROM odoo:15.0
+USER root
 
-# Evitar interacciones durante la instalación
-ENV DEBIAN_FRONTEND=noninteractive
-ENV LANG=C.UTF-8
-
-# Instalar dependencias
+# Instalar dependencias adicionales
 RUN apt-get update && apt-get install -y \
-    postgresql \
-    postgresql-client \
-    nodejs \
-    npm \
-    libxml2-dev \
-    libxslt1-dev \
-    libldap2-dev \
-    libsasl2-dev \
-    libpq-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    libfreetype6-dev \
-    liblcms2-dev \
-    libwebp-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libxcb1-dev \
+    git \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear directorios necesarios
-WORKDIR /workspace
-RUN mkdir -p /var/log/odoo && \
-    chown -R 1000:1000 /var/log/odoo && \
-    mkdir -p /etc/odoo
-
-# Configurar Git y credenciales
+# Configurar Git para clonar Enterprise
 ARG ODOO_ENTERPRISE_TOKEN
-RUN git config --global credential.helper store && \
+RUN git config --global user.name "Your Name" && \
+    git config --global user.email "you@example.com" && \
+    git config --global credential.helper store
+
+# Clonar Odoo y Enterprise
+RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /var/lib/odoo/odoo && \
     if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
-    echo "https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com" > ~/.git-credentials; \
+    git clone https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /var/lib/odoo/enterprise; \
     fi
 
-# Clonar Odoo Community y Enterprise
-RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
-    if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
-    git clone https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise; \
-    fi
+# Copiar requirements e instalarlos
+COPY ./requirements.txt /requirements.txt
+RUN pip3 install -r /requirements.txt
+RUN rm /requirements.txt
 
-# Instalar dependencias de Python
-RUN pip3 install -r /workspace/odoo/requirements.txt
+# Crear directorios necesarios y establecer permisos
+RUN mkdir -p /mnt/extra-addons \
+    && mkdir -p /mnt/repository \
+    && chown -R odoo:odoo /mnt/extra-addons \
+    && chown -R odoo:odoo /mnt/repository \
+    && chown -R odoo:odoo /var/lib/odoo/odoo \
+    && chown -R odoo:odoo /var/lib/odoo/enterprise
 
-# Copiar archivos de configuración
-COPY config/odoo.conf /etc/odoo/
-COPY scripts/start-odoo.sh /workspace/
-RUN chmod +x /workspace/start-odoo.sh
-
-# Exponer puertos
-EXPOSE 8069 5432
-
-# Comando por defecto
-CMD ["/workspace/start-odoo.sh"]
+USER odoo
