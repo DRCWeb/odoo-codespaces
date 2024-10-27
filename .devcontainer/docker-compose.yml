@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.8'  # Puedes omitir la versión para evitar la advertencia de obsolescencia
 services:
   web:
     build: 
@@ -6,7 +6,6 @@ services:
       args:
         - ODOO_ENTERPRISE_TOKEN=${ODOO_ENTERPRISE_TOKEN}
     container_name: ${ODOO_CONTAINER_NAME:-odoo}
-    working_dir: /mnt/repository  # Cambia el directorio de trabajo
     depends_on:
       - db
     ports:
@@ -24,3 +23,21 @@ services:
     entrypoint: /usr/bin/python3 -m debugpy --listen 0.0.0.0:8888 /usr/bin/odoo -c /etc/odoo/odoo.conf
     command: []
     restart: unless-stopped
+
+  db:
+    image: postgres:${PG_VERSION:-14}
+    container_name: ${PG_CONTAINER_NAME:-postgres}
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-admin}
+      - POSTGRES_USER=${PG_USER:-admin}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:
