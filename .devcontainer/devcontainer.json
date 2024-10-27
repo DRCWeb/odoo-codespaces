@@ -1,6 +1,8 @@
 {
     "name": "Odoo 15 Enterprise",
-    "dockerFile": "Dockerfile",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "web",
+    "workspaceFolder": "/workspace",
     "build": {
         "args": {
             "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
@@ -11,13 +13,15 @@
         "vscode": {
             "extensions": [
                 "ms-python.python",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "ms-azuretools.vscode-docker"
             ]
         }
     },
     "remoteEnv": {
         "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     },
+    "postCreateCommand": "docker-compose up -d",
     "hostRequirements": {
         "cpus": 4,
         "memory": "16gb",
