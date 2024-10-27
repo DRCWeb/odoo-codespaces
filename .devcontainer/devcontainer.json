@@ -1,11 +1,6 @@
 {
     "name": "Odoo 15 Enterprise",
     "dockerFile": "Dockerfile",
-    "build": {
-        "args": {
-            "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
-        }
-    },
     "forwardPorts": [8069, 5432],
     "customizations": {
         "vscode": {
@@ -14,9 +9,6 @@
                 "ms-python.vscode-pylance"
             ]
         }
-    },
-    "remoteEnv": {
-        "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     },
     "hostRequirements": {
         "cpus": 4,
