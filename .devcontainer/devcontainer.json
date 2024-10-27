@@ -1,7 +1,5 @@
 {
     "name": "Odoo 15 Enterprise",
-    "dockerComposeFile": "docker-compose.yml",
-    "service": "web",
     "workspaceFolder": "/workspace",
     "build": {
         "args": {
@@ -21,6 +19,7 @@
     "remoteEnv": {
         "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     },
+    "postStartCommand": "echo 'Codespace iniciado sin Docker Compose'",
     "hostRequirements": {
         "cpus": 4,
         "memory": "16gb",
