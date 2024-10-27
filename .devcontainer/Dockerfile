@@ -31,10 +31,14 @@ RUN mkdir -p /var/log/odoo && \
     chown -R 1000:1000 /var/log/odoo && \
     mkdir -p /etc/odoo
 
-# Clonar Odoo Community y Enterprise
-ARG ODOO_ENTERPRISE_TOKEN
-RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
-    git clone https://github.com/DRCWeb/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
+# Configurar Git y clonar repositorios
+ARG GITHUB_TOKEN
+RUN git config --global user.email "you@example.com" && \
+    git config --global user.name "Your Name" && \
+    git config --global credential.helper store && \
+    echo "https://${GITHUB_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials && \
+    git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
+    git clone https://${GITHUB_TOKEN}@github.com/DRCWeb/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
 
 # Instalar dependencias de Python
 RUN pip3 install -r /workspace/odoo/requirements.txt
