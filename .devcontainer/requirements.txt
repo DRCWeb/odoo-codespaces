@@ -16,7 +16,6 @@ Jinja2==2.10.1
 lxml==4.4.2
 Markdown==3.1.1
 num2words==0.5.6
-pandas==0.25.3
 pycountry==23.12.11
 python-dateutil==2.7.3
 python-stdnum==1.13
@@ -53,8 +52,6 @@ python-ldap==3.2.0
 PyJWT==1.7.1
 
 # Performance y Sistema
-gevent==1.4.0
-greenlet==0.4.15
 psutil==5.5.1
 psycogreen==1.0.1
 psycopg2==2.8.4

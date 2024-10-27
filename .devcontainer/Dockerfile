@@ -2,15 +2,9 @@ FROM odoo:15.0
 USER root
 
 # Instalar wget primero
-RUN apt-get update && apt-get install -y wget gnupg2 && rm -rf /var/lib/apt/lists/*
-
-# Configurar repositorio de PostgreSQL
-RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-
-# Instalar dependencias del sistema
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg2 \
     git \
     python3-pip \
     python3-dev \
@@ -35,12 +29,13 @@ RUN apt-get update && \
     python3-wheel \
     python3-venv \
     poppler-utils \
+    python3-pandas \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar Git para clonar Enterprise
 ARG ODOO_ENTERPRISE_TOKEN
-RUN git config --global user.name "Your Name" && \
-    git config --global user.email "you@example.com" && \
+RUN git config --global user.name "Dayron Romero" && \
+    git config --global user.email "dr@dfvz.org" && \
     git config --global credential.helper store
 
 # Clonar Odoo y Enterprise
@@ -52,9 +47,14 @@ RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /var/lib/
 # Actualizar pip e instalar herramientas básicas
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
+# Pre-instalar dependencias problemáticas
+RUN pip3 install --no-cache-dir \
+    greenlet==0.4.17 \
+    gevent==20.9.0
+
 # Copiar e instalar requirements
 COPY requirements.txt /requirements.txt
-RUN pip3 install -r /requirements.txt && \
+RUN pip3 install --no-cache-dir -r /requirements.txt && \
     rm /requirements.txt
 
 # Crear directorios necesarios y establecer permisos
