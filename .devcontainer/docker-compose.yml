@@ -5,35 +5,35 @@ services:
       context: .
       args:
         - ODOO_ENTERPRISE_TOKEN=${ODOO_ENTERPRISE_TOKEN}
-    container_name: ${ODOO_CONTAINER_NAME}
+    container_name: ${ODOO_CONTAINER_NAME:-odoo}
     depends_on:
       - db
     ports:
-      - "${ODOO_PORT}:8069"
-      - "${DEBUGPY_PORT}:8888"
+      - "${ODOO_PORT:-8069}:8069"
+      - "${DEBUGPY_PORT:-8888}:8888"
     volumes:
       - ./conf:/etc/odoo
       - odoo-web-data:/var/lib/odoo
-      - ${EXTRA_ADDONS}:/mnt/extra-addons:ro
-      - ${REPOSITORY}:/mnt/repository:ro
+      - /workspace/extra-addons:/mnt/extra-addons:ro
+      - /workspace/repository:/mnt/repository:ro
     environment:
       - HOST=db
-      - USER=${PG_USER}
-      - PASSWORD=${PG_PASSWORD}
-    entrypoint: ${ENTRYPOINT}
+      - USER=${PG_USER:-admin}
+      - PASSWORD=${PG_PASSWORD:-admin}
+    entrypoint: /usr/bin/python3 -m debugpy --listen 0.0.0.0:8888 /usr/bin/odoo -c /etc/odoo/odoo.conf
     command: []
     restart: unless-stopped
 
   db:
-    image: postgres:${PG_VERSION}
-    container_name: ${PG_CONTAINER_NAME}
+    image: postgres:${PG_VERSION:-14}
+    container_name: ${PG_CONTAINER_NAME:-postgres}
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-admin}
+      - POSTGRES_USER=${PG_USER:-admin}
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
-      - "${PG_PORT}:5432"
+      - "${PG_PORT:-5432}:5432"
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
     restart: unless-stopped
