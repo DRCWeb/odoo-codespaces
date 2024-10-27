@@ -28,7 +28,8 @@ RUN apt-get update && apt-get install -y \
 # Crear directorios necesarios
 WORKDIR /workspace
 RUN mkdir -p /var/log/odoo && \
-    chown -R 1000:1000 /var/log/odoo
+    chown -R 1000:1000 /var/log/odoo && \
+    mkdir -p /etc/odoo
 
 # Configurar Git para clonar Enterprise
 ARG ODOO_ENTERPRISE_TOKEN
@@ -48,7 +49,7 @@ RUN pip3 install -r /workspace/odoo/requirements.txt
 
 # Copiar archivos de configuración
 COPY config/odoo.conf /etc/odoo/
-COPY .devcontainer/start-odoo.sh /workspace/
+COPY scripts/start-odoo.sh /workspace/
 RUN chmod +x /workspace/start-odoo.sh
 
 # Exponer puertos
