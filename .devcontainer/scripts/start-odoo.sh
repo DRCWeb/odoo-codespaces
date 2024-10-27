@@ -25,7 +25,8 @@ echo "PostgreSQL está listo"
 # Crear usuarios y base de datos
 echo "Configurando usuarios y base de datos..."
 psql -U postgres << EOF
-CREATE USER vscode SUPERUSER;
+DROP DATABASE IF EXISTS odoo;
+DROP USER IF EXISTS odoo;
 CREATE USER odoo WITH PASSWORD 'odoo' SUPERUSER;
 CREATE DATABASE odoo OWNER odoo;
 EOF
@@ -34,16 +35,41 @@ EOF
 echo "Configurando directorios y permisos..."
 sudo mkdir -p /var/log/odoo
 sudo chown -R $(whoami):$(whoami) /var/log/odoo
+sudo chmod -R 755 /var/log/odoo
 
-# Mostrar mensaje de inicio
-echo "Iniciando Odoo..."
+# Limpiar logs anteriores
+sudo rm -f /var/log/odoo/odoo-server.log
+sudo touch /var/log/odoo/odoo-server.log
+sudo chown $(whoami):$(whoami) /var/log/odoo/odoo-server.log
 
-# Iniciar Odoo con la configuración establecida
+# Verificar permisos de addons
+sudo chown -R $(whoami):$(whoami) /workspace/odoo
+sudo chown -R $(whoami):$(whoami) /workspace/enterprise
+
+# Inicializar la base de datos con el módulo base
+echo "Inicializando base de datos con módulo base..."
 python3 /workspace/odoo/odoo-bin \
     -c /etc/odoo/odoo.conf \
     --db_host=localhost \
     --db_port=5432 \
     --db_user=odoo \
     --db_password=odoo \
+    --database=odoo \
     --without-demo=all \
-    --log-level=debug
+    -i base \
+    --stop-after-init
+
+# Mostrar mensaje de inicio
+echo "Iniciando Odoo en modo debug..."
+
+# Iniciar Odoo con la configuración establecida
+exec python3 /workspace/odoo/odoo-bin \
+    -c /etc/odoo/odoo.conf \
+    --db_host=localhost \
+    --db_port=5432 \
+    --db_user=odoo \
+    --db_password=odoo \
+    --database=odoo \
+    --without-demo=all \
+    --log-level=debug \
+    --dev=all
