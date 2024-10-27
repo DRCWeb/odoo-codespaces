@@ -1,6 +1,6 @@
 {
     "name": "Odoo 15 Enterprise",
-    "workspaceFolder": "/workspace",
+    "workspaceFolder": "/workspaces/odoo-codespaces",
     "build": {
         "args": {
             "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
@@ -26,3 +26,4 @@
         "storage": "32gb"
     }
 }
+
