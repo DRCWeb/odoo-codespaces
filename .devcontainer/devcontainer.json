@@ -21,7 +21,6 @@
     "remoteEnv": {
         "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     },
-    "postCreateCommand": "docker-compose up -d",
     "hostRequirements": {
         "cpus": 4,
         "memory": "16gb",
