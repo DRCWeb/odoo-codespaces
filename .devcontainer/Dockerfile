@@ -40,7 +40,21 @@ RUN apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Crear usuario y grupo odoo
-RUN useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+RUN groupadd -r odoo && useradd -r -g odoo -d /opt/odoo -s /bin/bash odoo
+
+# Configurar directorios y permisos iniciales
+RUN mkdir -p /opt/odoo \
+    && mkdir -p /mnt/extra-addons \
+    && mkdir -p /mnt/repository \
+    && mkdir -p /var/lib/odoo \
+    && chown -R odoo:odoo /opt/odoo \
+    && chown -R odoo:odoo /mnt/extra-addons \
+    && chown -R odoo:odoo /mnt/repository \
+    && chown -R odoo:odoo /var/lib/odoo \
+    && chmod -R 755 /opt/odoo \
+    && chmod -R 755 /mnt/extra-addons \
+    && chmod -R 755 /mnt/repository \
+    && chmod -R 755 /var/lib/odoo
 
 # Configurar Git para clonar Enterprise
 ARG ODOO_ENTERPRISE_TOKEN
@@ -52,6 +66,10 @@ RUN git config --global user.name "Your Name" && \
 RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /var/lib/odoo/odoo && \
     if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
     git clone https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /var/lib/odoo/enterprise; \
+    fi && \
+    chown -R odoo:odoo /var/lib/odoo/odoo && \
+    if [ -d "/var/lib/odoo/enterprise" ]; then \
+        chown -R odoo:odoo /var/lib/odoo/enterprise; \
     fi
 
 # Actualizar pip e instalar herramientas básicas
@@ -68,20 +86,17 @@ COPY requirements.txt /requirements.txt
 RUN pip3 install --no-cache-dir -r /requirements.txt && \
     rm /requirements.txt
 
-# Crear directorios necesarios y establecer permisos
-RUN mkdir -p /mnt/extra-addons \
-    && mkdir -p /mnt/repository \
-    && mkdir -p /var/lib/odoo \
+# Asegurar permisos finales
+RUN chown -R odoo:odoo /opt/odoo \
     && chown -R odoo:odoo /mnt/extra-addons \
     && chown -R odoo:odoo /mnt/repository \
-    && chown -R odoo:odoo /var/lib/odoo \
-    && chown -R odoo:odoo /opt/odoo
+    && chown -R odoo:odoo /var/lib/odoo
 
 # Configurar Python
 ENV PYTHONPATH=/var/lib/odoo
 ENV PATH="/var/lib/odoo/odoo/bin:${PATH}"
 
-# Cambiar al usuario odoo para ejecutar el servicio
+# Cambiar al usuario odoo
 USER odoo
 
 # Exponer puertos
