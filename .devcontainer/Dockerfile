@@ -39,6 +39,9 @@ RUN apt-get install -y \
     poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
+# Crear usuario y grupo odoo
+RUN useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+
 # Configurar Git para clonar Enterprise
 ARG ODOO_ENTERPRISE_TOKEN
 RUN git config --global user.name "Your Name" && \
@@ -71,12 +74,14 @@ RUN mkdir -p /mnt/extra-addons \
     && mkdir -p /var/lib/odoo \
     && chown -R odoo:odoo /mnt/extra-addons \
     && chown -R odoo:odoo /mnt/repository \
-    && chown -R odoo:odoo /var/lib/odoo
+    && chown -R odoo:odoo /var/lib/odoo \
+    && chown -R odoo:odoo /opt/odoo
 
 # Configurar Python
 ENV PYTHONPATH=/var/lib/odoo
 ENV PATH="/var/lib/odoo/odoo/bin:${PATH}"
 
+# Cambiar al usuario odoo para ejecutar el servicio
 USER odoo
 
 # Exponer puertos
