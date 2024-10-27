@@ -1,14 +1,16 @@
 FROM odoo:15.0
 USER root
 
+# Instalar wget primero
+RUN apt-get update && apt-get install -y wget gnupg2 && rm -rf /var/lib/apt/lists/*
+
 # Configurar repositorio de PostgreSQL
 RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Instalar dependencias del sistema
 RUN apt-get update && \
-    apt-get remove -y libpq5 postgresql-client && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     git \
     python3-pip \
     python3-dev \
@@ -33,7 +35,6 @@ RUN apt-get update && \
     python3-wheel \
     python3-venv \
     poppler-utils \
-    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar Git para clonar Enterprise
@@ -59,10 +60,10 @@ RUN pip3 install -r /requirements.txt && \
 # Crear directorios necesarios y establecer permisos
 RUN mkdir -p /mnt/extra-addons \
     && mkdir -p /mnt/repository \
+    && mkdir -p /var/lib/odoo \
     && chown -R odoo:odoo /mnt/extra-addons \
     && chown -R odoo:odoo /mnt/repository \
-    && chown -R odoo:odoo /var/lib/odoo/odoo \
-    && chown -R odoo:odoo /var/lib/odoo/enterprise
+    && chown -R odoo:odoo /var/lib/odoo
 
 # Configurar Python
 ENV PYTHONPATH=/var/lib/odoo
