@@ -33,7 +33,7 @@ RUN mkdir -p /var/log/odoo && \
 
 # Clonar Odoo Community y Enterprise
 RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspace/odoo && \
-    git clone https://github.com/DRCWeb/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
+    git clone https://github.com/odoo/enterprise.git --depth 1 --branch 15.0 /workspace/enterprise
 
 # Instalar dependencias de Python
 RUN pip3 install -r /workspace/odoo/requirements.txt
