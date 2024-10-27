@@ -9,19 +9,8 @@ until pg_isready; do
     sleep 2
 done
 
-# Construir ruta de addons
-ADDONS_PATH="/workspace/odoo/addons"
-if [ -d "/workspace/enterprise" ]; then
-    ADDONS_PATH="/workspace/enterprise,${ADDONS_PATH}"
-    echo "Odoo Enterprise detectado, agregado al addons_path"
-fi
+# Crear usuario de PostgreSQL si no existe
+su - postgres -c "createuser -s odoo" 2>/dev/null || true
 
-# Iniciar Odoo
-python3 /workspace/odoo/odoo-bin \
-    --addons-path=/workspace/odoo/addons \
-    --db_host=localhost \
-    --db_user=odoo \
-    --db_password=odoo \
-    --database=odoo \
-    -i base \
-    --dev=all
+# Iniciar Odoo con archivo de configuración
+python3 /workspace/odoo/odoo-bin -c /etc/odoo/odoo.conf
