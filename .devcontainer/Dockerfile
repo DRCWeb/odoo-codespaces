@@ -47,7 +47,7 @@ RUN git clone https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /workspac
 # Instalar dependencias de Python
 RUN pip3 install -r /workspace/odoo/requirements.txt
 
-# Copiar archivos de configuración desde el contexto de construcción
+# Copiar archivos de configuración
 COPY config/odoo.conf /etc/odoo/
 COPY scripts/start-odoo.sh /workspace/
 RUN chmod +x /workspace/start-odoo.sh
