@@ -1,4 +1,4 @@
-version: '3.8'  # Puedes omitir la versión para evitar la advertencia de obsolescencia
+version: '3.8'
 services:
   web:
     build: 
@@ -10,7 +10,6 @@ services:
       - db
     ports:
       - "${ODOO_PORT:-8069}:8069"
-      - "${DEBUGPY_PORT:-8888}:8888"
     volumes:
       - ./conf:/etc/odoo
       - odoo-web-data:/var/lib/odoo
@@ -20,8 +19,7 @@ services:
       - HOST=db
       - USER=${PG_USER:-admin}
       - PASSWORD=${PG_PASSWORD:-admin}
-    entrypoint: /usr/bin/python3 -m debugpy --listen 0.0.0.0:8888 /usr/bin/odoo -c /etc/odoo/odoo.conf
-    command: []
+    entrypoint: /usr/bin/odoo -c /etc/odoo/odoo.conf
     restart: unless-stopped
 
   db:
