@@ -1,0 +1,11 @@
+debugpy
+pydevd-odoo
+validators
+xades
+lxml
+pycountry
+qrcode
+xmltodict
+wkhtmltopdf
+google_auth
+zxcvbn
