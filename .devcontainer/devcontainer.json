@@ -14,5 +14,8 @@
         "cpus": 4,
         "memory": "16gb",
         "storage": "32gb"
+    },
+    "remoteEnv": {
+        "ODOO_ENTERPRISE_TOKEN": "${{ secrets.ODOO_ENTERPRISE_TOKEN }}"
     }
 }
