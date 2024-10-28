@@ -1,6 +1,7 @@
 FROM odoo:15.0
 USER root
 
+ARG ODOO_ENTERPRISE_TOKEN  # Agregar argumento de compilación
 SHELL ["/bin/bash", "-xeo", "pipefail", "-c"]
 
 # Agregar repositorio de PostgreSQL y su clave
@@ -40,18 +41,11 @@ RUN set -x && \
     install -d -o odoo -g odoo -m 755 /mnt/repository && \
     install -d -o odoo -g odoo -m 755 /var/lib/odoo
 
-# Configurar Git para clonar Enterprise
-ARG ODOO_ENTERPRISE_TOKEN
-RUN set -x && \
-    git config --global user.name "Your Name" && \
-    git config --global user.email "you@example.com" && \
-    git config --global credential.helper store
-
 # Clonar repositorios como odoo para evitar cambios de propiedad
 USER odoo
 RUN set -x && \
     git clone -v https://github.com/odoo/odoo.git --depth 1 --branch 15.0 /var/lib/odoo/odoo && \
-    if [ ! -z "$ODOO_ENTERPRISE_TOKEN" ]; then \
+    if [ -n "$ODOO_ENTERPRISE_TOKEN" ]; then \
         git clone -v https://oauth2:${ODOO_ENTERPRISE_TOKEN}@github.com/odoo/enterprise.git --depth 1 --branch 15.0 /var/lib/odoo/enterprise; \
     fi
 
