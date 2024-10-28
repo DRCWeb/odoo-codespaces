@@ -21,6 +21,8 @@ services:
       - PASSWORD=${PG_PASSWORD:-admin}
     entrypoint: /usr/bin/odoo -c /etc/odoo/odoo.conf
     restart: unless-stopped
+    env_file:
+      - .env
 
   db:
     image: postgres:${PG_VERSION:-14}
@@ -35,6 +37,8 @@ services:
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
     restart: unless-stopped
+    env_file:
+      - .env
 
 volumes:
   odoo-web-data:
