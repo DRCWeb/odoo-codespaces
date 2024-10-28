@@ -19,7 +19,7 @@ services:
       - HOST=db
       - USER=${PG_USER:-admin}
       - PASSWORD=${PG_PASSWORD:-admin}
-    entrypoint: /usr/bin/odoo -c /etc/odoo/odoo.conf
+    entrypoint: /entrypoint.sh -c /etc/odoo/odoo.conf
     restart: unless-stopped
     env_file:
       - .env
