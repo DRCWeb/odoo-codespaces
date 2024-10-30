@@ -3,7 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
-    "workspaceFolder": "/workspaces/odoo-codespaces",
+    "workspaceFolder": "/workspaces/odoo-codespaces/.devcontainer/container/",
     "customizations": {
         "vscode": {
             "extensions": [
