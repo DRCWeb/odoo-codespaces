@@ -1,9 +1,10 @@
 {
     "name": "Odoo 15 Enterprise",
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "container/Dockerfile",
+        "context": "container"
     },
-    "workspaceFolder": "/workspaces/odoo-codespaces/.devcontainer/container/",
+    "workspaceFolder": "/workspaces/odoo-codespaces",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -11,7 +12,6 @@
                 "ms-python.vscode-pylance",
                 "ms-azuretools.vscode-docker",
                 "formulahendry.docker-explorer"
-                
             ]
         }
     },
@@ -21,6 +21,6 @@
         "storage": "32gb"
     },
     "remoteEnv": {
-        "ODOO_ENTERPRISE_TOKEN": "${{ secrets.ODOO_ENTERPRISE_TOKEN }}"
+        "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
     }
 }
