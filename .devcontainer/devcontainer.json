@@ -1,9 +1,6 @@
 {
     "name": "Odoo 15 Enterprise",
-    "build": {
-        "dockerfile": "container/Dockerfile",
-        "context": "container"
-    },
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",  // O puedes usar ":alpine" para una imagen más ligera
     "workspaceFolder": "/workspaces/odoo-codespaces",
     "customizations": {
         "vscode": {
