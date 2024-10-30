@@ -100,25 +100,25 @@ Para modificar estos recursos:
 - La base de datos se persiste mientras el codespace esté activo
 - Se recomienda hacer respaldos regulares de la base de datos
 
-## ⚠️ Solución de Problemas
+## ⚠️ Instalacion y Uso
 
-### Problemas Comunes
+### Proceso de Instalacion
 
-1. **El servidor no inicia:**
+1. **Construir el Contenedor:**
    ```bash
-   # Revisa los logs
-   docker logs [container-id]
+   docker build --build-arg ODOO_ENTERPRISE_TOKEN=$ODOO_ENTERPRISE_TOKEN -t odoo:15.0 .   
    ```
 
-2. **Error de permisos en PostgreSQL:**
+2. **Cargar el DockerCompose**
    ```bash
-   sudo service postgresql restart
+   docker compose -f "docker-compose.yml" up -d --build
    ```
 
-3. **Módulos no detectados:**
-   - Verifica la ruta en addons_path
-   - Reinicia el servidor Odoo
-
+3. **Modificar Fecha de Expiracion de la DB**
+   ```bash
+   INSERT INTO ir_config_parameter (key, value) 
+   VALUES ('database.expiration_date', '2099-12-31 00:00:00');
+   ```
 ## 📚 Recursos Adicionales
 
 - [Documentación oficial de Odoo](https://www.odoo.com/documentation/15.0/)
