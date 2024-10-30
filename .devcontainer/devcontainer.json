@@ -1,7 +1,14 @@
 {
     "name": "Odoo 15 Enterprise",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",  // O puedes usar ":alpine" para una imagen más ligera
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "workspaceFolder": "/workspaces/odoo-codespaces",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": "true",
+            "moby": "true"
+        }
+    },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -19,5 +26,11 @@
     },
     "remoteEnv": {
         "ODOO_ENTERPRISE_TOKEN": "${localEnv:ODOO_ENTERPRISE_TOKEN}"
-    }
+    },
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3-pip",
+    "runArgs": ["--init"],
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "overrideCommand": false
 }
